@@ -1,16 +1,36 @@
 
 
 import os
+import shutil
 import time
 from utils import interact, locator_loader
 from utils.config_reader import BASE_URL
 
+def clean_directory_completely(path):
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)  
+                print(f"Deleted file: {file_path}")
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)  
+                print(f"Deleted folder: {file_path}")
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
 
 class Login_page:
+
     def __init__(self,driver,output_dir,visual_testing):
         self.visual_testing = visual_testing
         self.driver = driver
         self.baseline_dir_path,self.actual_dir_path,self.comparison_dir_path = output_dir
+
+        if visual_testing == 'no':
+            clean_directory_completely(self.baseline_dir_path)
+        else:
+            clean_directory_completely(self.actual_dir_path)
+            clean_directory_completely(self.comparison_dir_path)
     
         self.interact = interact.Interact(driver)
         locator_path = str(os.path.join(os.getcwd(),"locators","login_locators.json"))
@@ -55,4 +75,4 @@ class Login_page:
     def login(self,username,password):
         self.input_username(username)
         self.input_password(password)
-        self.click_on_login_button()
+        # self.click_on_login_button()

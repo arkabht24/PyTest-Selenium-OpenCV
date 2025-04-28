@@ -1,5 +1,7 @@
 
 import pytest
+
+from compare_images import Screenshot_comparison
 from utils.get_drivers import get_driver
 import os
 from datetime import datetime
@@ -65,3 +67,20 @@ def output_dir(request):
 @pytest.fixture(scope = "session")
 def visual_testing(request):
     return request.config.getoption("--visual-testing")
+
+
+
+def pytest_runtest_teardown(item):
+    module_name = item.name
+    if item.config.getoption("--visual-testing") == 'yes':
+        comparison = Screenshot_comparison()
+        baseline_output_dir = os.path.join(os.getcwd(), "Images","Baseline", f"{module_name}")
+        actual_output_dir = os.path.join(os.getcwd(), "Images","Actual", f"{module_name}")
+        comparison_output_dir = os.path.join(os.getcwd(), "Images","Comparison", f"{module_name}")
+
+        for image in os.listdir(baseline_output_dir):
+            baseline_image = os.path.join(baseline_output_dir,image)
+            actual_image = os.path.join(actual_output_dir,image)
+            comparison_image = os.path.join(comparison_output_dir,image)
+            comparison.compare_images_with_contours(baseline_image,actual_image,comparison_image)
+
