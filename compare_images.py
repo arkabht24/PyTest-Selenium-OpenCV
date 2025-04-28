@@ -34,5 +34,4 @@ class Screenshot_comparison:
         cv2.imwrite(output_path, img2)
         print(f"Differences highlighted and saved to: {output_path}")
 
-# Example usage
-# compare_images_with_contours("image1.png", "image2.png", "output_diff.png")
+
