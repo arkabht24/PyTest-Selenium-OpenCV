@@ -18,15 +18,8 @@ def driver(request):
     driver.quit()
 
 
-
-
-# This hook runs before the tests are executed
-@pytest.hookimpl(tryfirst=True)
-def pytest_collection_modifyitems(session, config, items):
-    
-    # Get the module name from the first collected test item
-    module_name = items[0].module.__name__.split(".")[-1]
-    
+def pytest_runtest_setup(item):
+    module_name = item.name
     baseline_output_dir = os.path.join(os.getcwd(), "Images","Baseline", f"{module_name}")
     actual_output_dir = os.path.join(os.getcwd(), "Images","Actual", f"{module_name}")
     comparison_output_dir = os.path.join(os.getcwd(), "Images","Comparison", f"{module_name}")
@@ -35,11 +28,33 @@ def pytest_collection_modifyitems(session, config, items):
     os.makedirs(actual_output_dir, exist_ok=True)
     os.makedirs(comparison_output_dir, exist_ok=True)
 
+    session = item.session
+
     session.baseline_output_dir = baseline_output_dir
     session.actual_output_dir = actual_output_dir
     session.comparison_output_dir = comparison_output_dir
 
-    print(f"\nCreated directory for test artifacts: {output_dir}")
+
+
+# This hook runs before the tests are executed
+# @pytest.hookimpl(tryfirst=True)
+# def pytest_collection_modifyitems(session, config, items):
+    
+#     module_name = items[0].module.__name__.split(".")[-1]
+    
+#     baseline_output_dir = os.path.join(os.getcwd(), "Images","Baseline", f"{module_name}")
+#     actual_output_dir = os.path.join(os.getcwd(), "Images","Actual", f"{module_name}")
+#     comparison_output_dir = os.path.join(os.getcwd(), "Images","Comparison", f"{module_name}")
+    
+#     os.makedirs(baseline_output_dir, exist_ok=True)
+#     os.makedirs(actual_output_dir, exist_ok=True)
+#     os.makedirs(comparison_output_dir, exist_ok=True)
+
+#     session.baseline_output_dir = baseline_output_dir
+#     session.actual_output_dir = actual_output_dir
+#     session.comparison_output_dir = comparison_output_dir
+
+#     print(f"\nCreated directory for test artifacts: {output_dir}")
 
 
 
