@@ -14,6 +14,7 @@ def get_driver(browser="chrome"):
     """
     # Get the path to the drivers in your project directory
     chromedriver_path = os.path.join(os.getcwd(), 'drivers', 'chromedriver')
+    print("Chromedriver Path ---> ",chromedriver_path)
     geckodriver_path = os.path.join(os.getcwd(), 'drivers', 'geckodriver')
 
     if browser.lower() == "chrome":
